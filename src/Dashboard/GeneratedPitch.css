@@ -1,0 +1,47 @@
+.report-container {
+  padding: 30px;
+  max-width: 800px;
+  margin: auto;
+  font-family: Arial, sans-serif;
+}
+
+.report-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.report-title {
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.report-section {
+  margin-top: 20px;
+}
+
+.pitch-details p {
+  margin: 5px 0;
+}
+
+.generated-pitch {
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+}
+
+.generated-pitch button {
+  padding: 8px 15px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.generated-pitch button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}

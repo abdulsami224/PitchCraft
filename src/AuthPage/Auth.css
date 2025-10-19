@@ -1,0 +1,148 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+  background: #f4f6f8;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.auth-container {
+  width: 400px;
+  background: #fff;
+  padding: 40px 35px;
+  border-radius: 14px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.auth-container:hover {
+  transform: translateY(-3px);
+}
+
+.auth-container h2 {
+  color: #333;
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+.auth-container input {
+  width: 100%;
+  padding: 12px 14px;
+  margin: 12px 0;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.auth-container input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: white;
+  color: #444;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+  width: 100%;
+}
+
+.auth-container input[type="file"] {
+  margin-top: 10px;
+  padding: 8px;
+  background-color: #f1f1f1;
+  border-radius: 6px;
+}
+.auth-container label {
+  display: block;
+  margin-top: 10px;
+}
+
+
+.google-btn:hover {
+  background-color: #f7f7f7;
+  border-color: #bbb;
+}
+
+.google-icon {
+  font-size: 22px;
+}
+
+
+
+.auth-container button {
+  width: 100%;
+  padding: 12px;
+  background: #007bff;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background 0.3s ease-in-out;
+}
+
+.auth-container button:hover {
+  background: #0056b3;
+}
+
+.auth-container p {
+  margin-top: 18px;
+  font-size: 14px;
+  color: #555;
+}
+
+.auth-container a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.auth-container a:hover {
+  color: #0056b3;
+}
+
+@media (max-width: 768px) {
+  .auth-container {
+    width: 90%;
+    padding: 30px 25px;
+  }
+
+  .auth-container h2 {
+    font-size: 22px;
+  }
+
+  .auth-container input,
+  .auth-container button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-container {
+  animation: fadeIn 0.6s ease-in-out;
+}
