@@ -1,45 +1,76 @@
-/* Container */
+:root {
+  --primary: #0077b6;       /* Main blue */
+  --primary-dark: #005f86;  /* Darker shade for hover/active states */
+  --accent: #0096c7;        /* Accent / underline / highlights */
+  --light-bg: #f0f8ff;      /* Light background */
+  --text-dark: #1f2937;     /* Dark text */
+  --text-light: #4b5563;    /* Secondary text */
+  --border: #cbd5e1;        /* Border color */
+}
+
+
+/* === CONTAINER === */
 .createpitch-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f0f4ff, #e6ecfa);
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--light-bg), #ede9fe);
+  font-family: 'Poppins', Arial, sans-serif;
 }
 
-/* Card */
+/* === CARD === */
 .createpitch-card {
   background: #ffffff;
   padding: 35px;
   border-radius: 16px;
-  box-shadow: 0px 6px 20px rgba(0,0,0,0.1);
+  box-shadow: 0px 6px 18px rgba(0,0,0,0.1);
   width: 100%;
   max-width: 480px;
-  transition: transform 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border: 1px solid var(--border);
+
+  /* Make card fit on mobile & desktop */
+  max-height: 90vh;        /* 90% of viewport height */
+  overflow-y: auto;        /* Scroll inside card if needed */
 }
 
+.createpitch-card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.createpitch-card::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 3px;
+}
+
+/* Hover effect */
 .createpitch-card:hover {
   transform: translateY(-4px);
+  box-shadow: 0px 10px 22px rgba(0,0,0,0.12);
 }
 
-/* Title & Subtitle */
+/* === TITLE & SUBTITLE === */
 .createpitch-title {
-  font-size: 26px;
-  font-weight: 700;
+  font-size: 28px;
+  font-weight: 800;
   text-align: center;
   margin-bottom: 8px;
-  color: #1e293b;
+  color: var(--primary-dark);
+  text-transform: uppercase;
+  position: relative;
+  letter-spacing: 1px;
 }
 
 .createpitch-subtitle {
   font-size: 14px;
   text-align: center;
-  margin-bottom: 25px;
-  color: #475569;
+  margin-bottom: 28px;
+  color: var(--text-light);
 }
 
-/* Form */
+/* === FORM === */
 .createpitch-form {
   display: flex;
   flex-direction: column;
@@ -53,7 +84,7 @@
   display: block;
   font-weight: 600;
   margin-bottom: 6px;
-  color: #334155;
+  color: var(--text-dark);
   font-size: 14px;
 }
 
@@ -62,19 +93,19 @@
 .form-group select {
   width: 100%;
   padding: 12px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border);
   border-radius: 10px;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.3s, box-shadow 0.3s;
-  background-color: #f8fafc;
+  background-color: #fafafa;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
-  border-color: #2563eb;
-  box-shadow: 0px 0px 5px rgba(37,99,235,0.4);
+  border-color: var(--primary);
+  box-shadow: 0px 0px 6px rgba(79, 70, 229, 0.4);
   background-color: #ffffff;
 }
 
@@ -83,9 +114,9 @@ textarea {
   height: 100px;
 }
 
-/* Button */
+/* === SUBMIT BUTTON === */
 .submit-btn {
-  background: #2563eb;
+  background: var(--primary);
   color: #ffffff;
   padding: 14px;
   border: none;
@@ -93,14 +124,32 @@ textarea {
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s, transform 0.2s;
+  transition: background 0.3s ease, transform 0.2s ease;
 }
 
 .submit-btn:hover {
-  background: #1d4ed8;
+  background: var(--primary-dark);
   transform: translateY(-2px);
 }
 
 .submit-btn:active {
   transform: translateY(1px);
+}
+
+/* === RESPONSIVE ADJUSTMENTS === */
+@media (max-width: 600px) {
+  .createpitch-card {
+    max-width: 100%;
+    padding: 25px;
+    max-height: 95vh;
+  }
+
+  .createpitch-title {
+    font-size: 24px;
+  }
+
+  .submit-btn {
+    font-size: 15px;
+    padding: 12px;
+  }
 }

@@ -1,47 +1,149 @@
+:root {
+  --primary: #0077b6;       
+  --primary-dark: #005f86;  
+  --accent: #0096c7;        
+  --light-bg: #f0f8ff;      
+  --text-dark: #1f2937;     
+  --text-light: #4b5563;    
+  --border: #cbd5e1;        
+}
+
 .report-container {
-  padding: 30px;
-  max-width: 800px;
-  margin: auto;
-  font-family: Arial, sans-serif;
+  padding: 40px;
+  max-width: 850px;
+  margin: 40px auto;
+  font-family: 'Poppins', Arial, sans-serif;
+  background-color: var(--light-bg);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
+/* === CARD === */
 .report-card {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
 }
 
+/* === MAIN TITLE === */
 .report-title {
-  border-bottom: 2px solid #eee;
-  padding-bottom: 10px;
+  text-align: center;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--primary-dark);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-bottom: 3px solid var(--accent);
+  padding-bottom: 12px;
+  margin-bottom: 30px;
+  position: relative;
 }
 
+.report-title::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background-color: var(--primary);
+  border-radius: 3px;
+}
+
+/* === SECTIONS === */
 .report-section {
-  margin-top: 20px;
+  margin-top: 25px;
 }
 
 .pitch-details p {
-  margin: 5px 0;
+  margin: 6px 0;
+  color: var(--text-light);
+  font-size: 0.95rem;
 }
 
+/* === GENERATED PITCH === */
 .generated-pitch {
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #f9f9f9;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background-color: #fafaff;
 }
 
-.generated-pitch button {
-  padding: 8px 15px;
-  border: none;
-  background-color: #007bff;
+/* === PITCH TEXT AREA === */
+.pitch-output {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  margin-top: 0.7rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  color: var(--text-dark);
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.pitch-output h3 {
+  color: var(--primary-dark);
+  font-size: 1.15rem;
+  border-left: 4px solid var(--primary);
+  padding-left: 10px;
+  margin-top: 1.4em;
+  margin-bottom: 0.5em;
+}
+
+.pitch-output strong {
+  color: var(--accent);
+}
+
+/* === ACTION BUTTONS === */
+.action-buttons {
+  margin-top: 25px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.action-buttons button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--primary);
   color: white;
-  border-radius: 5px;
+  padding: 9px 16px;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: 0.2s ease-in-out;
 }
 
-.generated-pitch button:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
+.action-buttons button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+/* Specific Buttons */
+.copy-btn {
+  background: #10b981;
+}
+.copy-btn:hover {
+  background: #059669;
+}
+
+.regen-btn {
+  background: #f59e0b;
+}
+.regen-btn:hover {
+  background: #d97706;
+}
+
+.pdf-btn {
+  background: #ef4444;
+}
+.pdf-btn:hover {
+  background: #dc2626;
 }

@@ -1,40 +1,40 @@
-import { useState,useEffect} from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import "./CreatePitch.css";
-import { db, auth } from "../firebase"; 
+import { db, auth } from "../firebase";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-// import {GoogleGenerativeAI}from "@google/gennrative-ai"
+import { toast } from "react-toastify"; 
+
 export default function CreatePitch() {
+  const navigate = useNavigate();
+  const [data, setData] = useState({
+    idea: "",
+    description: "",
+    industry: "",
+    detailLevel: ""
+  });
 
-    const navigate = useNavigate();
-    // const genAI=new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY)
-    const [data, setData] = useState({
-        idea: "",
-        description: "",
-        industry: "",
-        detailLevel: ""
-    });
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setData((prev) => ({
-        ...prev, [name]: value
-        }));
-    };
-
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!auth.currentUser) {
-      alert("Please login first to save a pitch.");
+      toast.warn("⚠️ Please login first to save a pitch.");
       return;
     }
 
     try {
-       const docRef = await addDoc(collection(db, "pitches"), {
+      const docRef = await addDoc(collection(db, "pitches"), {
         userId: auth.currentUser.uid,
+        userEmail: auth.currentUser.email || "",
+        userName: auth.currentUser.displayName || "",
         idea: data.idea,
         description: data.description,
         industry: data.industry,
@@ -42,7 +42,7 @@ export default function CreatePitch() {
         createdAt: serverTimestamp(),
       });
 
-      alert("✅ Pitch saved successfully!");
+      toast.success("Pitch saved successfully!");
       setData({
         idea: "",
         description: "",
@@ -51,16 +51,11 @@ export default function CreatePitch() {
       });
 
       navigate(`/GeneratedPitch/${docRef.id}`);
-      
     } catch (err) {
       console.error("Error saving pitch:", err.message);
-      alert("Error: " + err.message);
+      toast.error("Error: " + err.message);
     }
   };
-
-    
-    
-
 
   return (
     <div className="createpitch-container">
@@ -71,7 +66,6 @@ export default function CreatePitch() {
         </p>
 
         <form onSubmit={handleSubmit} className="createpitch-form">
-       
           <div className="form-group">
             <label htmlFor="idea">Startup Idea</label>
             <input

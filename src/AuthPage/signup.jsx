@@ -7,8 +7,9 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { auth, googleProvider } from "../firebase";
-import "../AuthPage/Auth.css";
+import "./Auth.css";
 import { FcGoogle } from "react-icons/fc";
+import { toast } from "react-toastify";
 
 export default function Signup() {
   const [firstName, setFirstName] = useState("");
@@ -28,13 +29,13 @@ export default function Signup() {
         displayName: `${firstName} ${lastName}`,
       });
 
-      alert("Signup successful! 🎉");
+      toast.success("Signup successful! 🎉");
       navigate("/");
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
-        alert("Email already registered. Please login instead.");
+        toast.error("Email already registered. Please login instead.");
       } else {
-        alert(error.message);
+        toast.error(error.message);
       }
     }
   };
@@ -42,10 +43,10 @@ export default function Signup() {
   const handleGoogleSignup = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-      alert("Signed up with Google!");
+      toast.success("Signed in with Google! 🚀");
       navigate("/dashboard");
     } catch (error) {
-      alert(error.message);
+      toast.error(error.message);
     }
   };
 

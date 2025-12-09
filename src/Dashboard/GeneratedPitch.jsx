@@ -1,44 +1,70 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { db } from "../firebase";
+import { db , auth } from "../firebase";
 import { doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-
-import "./GeneratedPitch.css"; // Import CSS separately
+import { Copy, RefreshCw, FileDown } from "lucide-react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import { toast } from "react-toastify"; 
+import "react-toastify/dist/ReactToastify.css";
+import emailjs from "@emailjs/browser";
+import "./GeneratedPitch.css";
 
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
+
+const EMAIL_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+const EMAIL_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+const EMAIL_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 export default function GeneratedPitch() {
   const { pitchId } = useParams();
   const [pitch, setPitch] = useState(null);
   const [generated, setGenerated] = useState("");
   const [loading, setLoading] = useState(false);
+  const pitchRef = useRef(null);
+  const hasRunRef = useRef(false);
+
+  const formatText = (text) => {
+    return text
+      .replace(/### (.*?)(\n|$)/g, "<h3>$1</h3>")
+      .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\n\n/g, "<br /><br />");
+  };
 
   const handleGenerate = async (pitchData = pitch) => {
     if (!pitchData) return;
     setLoading(true);
 
+    const wasGeneratedBefore = !!pitchData.generatedPitch;
+
     try {
-      const model = await genAI.getGenerativeModel({ model: "text-bison-001" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
       const prompt = `
-      Generate a ${pitchData.detailLevel || "short"} startup pitch.
-      Idea: ${pitchData.idea}
-      Description: ${pitchData.description}
-      Industry: ${pitchData.industry}
-      Make it catchy, professional, and clear.
+        You are a friendly and skilled startup pitch writer.
+        Write a ${pitchData.detailLevel || "short"} startup pitch using the details below:
+
+        💡 Idea: ${pitchData.idea}
+        📝 Description: ${pitchData.description}
+        🏭 Industry: ${pitchData.industry}
+
+        Format the pitch in clear sections using "###" for headings:
+        - Problem
+        - Solution
+        - Unique Value
+        - Market Impact
+        - Call to Action
+
+        Write in simple, everyday English so anyone can easily understand it.
+        Avoid complex words or long sentences.
+        Make it sound confident, inspiring, and easy to read.
+        End with a short, motivating line that encourages action.
       `;
 
       const result = await model.generateContent(prompt);
-
-      let text = "";
-      if (result.response && result.response.text) {
-        text = await result.response.text();
-      } else if (result.output_text) {
-        text = result.output_text;
-      } else {
-        text = "⚠️ AI returned no text.";
-      }
+      const response = await result.response;
+      const text = response.text();
 
       setGenerated(text);
 
@@ -46,15 +72,83 @@ export default function GeneratedPitch() {
         generatedPitch: text,
         generatedAt: serverTimestamp(),
       });
+
+      if (!wasGeneratedBefore) {
+        try {
+          const summary = text.length > 150 ? text.slice(0, 150) + "..." : text;
+
+          const userEmail = pitchData.userEmail || (auth.currentUser && auth.currentUser.email) || "";
+          const userName = (auth.currentUser && auth.currentUser.displayName) || "User";
+
+          const pitchLink = `${window.location.origin}/GeneratedPitch/${pitchId}`;
+
+          const templateParams = {
+            user_name: userName,
+            user_email: userEmail,
+            pitch_title: pitchData.idea || "Your Pitch",
+            pitch_summary: summary,
+            pitch_link: pitchLink,
+            created_at: new Date().toLocaleString(),
+          };
+
+          await emailjs.send(
+            EMAIL_SERVICE_ID,
+            EMAIL_TEMPLATE_ID,
+            templateParams,
+            EMAIL_PUBLIC_KEY
+          );
+
+        } catch (emailErr) {
+          console.error("EmailJS error:", emailErr);
+        }
+      }
+
+      toast.success("Pitch generated successfully!");
+
     } catch (err) {
       console.error("AI Error:", err);
-      alert("❌ Error generating pitch");
+      toast.error("Error generating pitch!");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(generated);
+    toast.info("📋 Pitch copied to clipboard!");
+  };
+
+  const handleDownloadPDF = async () => {
+    const element = pitchRef.current;
+    const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgHeight = (canvas.height * pageWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, "PNG", 0, position, pageWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, "PNG", 0, position, pageWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save("StartupPitch.pdf");
+    toast.success("📄 PDF downloaded successfully!");
+  };
+
   useEffect(() => {
+    if (hasRunRef.current) return; 
+    hasRunRef.current = true;
+
     async function fetchPitch() {
       const docRef = doc(db, "pitches", pitchId);
       const snap = await getDoc(docRef);
@@ -65,17 +159,16 @@ export default function GeneratedPitch() {
         if (snap.data().generatedPitch) {
           setGenerated(snap.data().generatedPitch);
         } else {
-          try {
-            await handleGenerate(pitchData);
-          } catch (err) {
-            console.error("AI generation failed:", err);
-          }
+          await handleGenerate(pitchData);
         }
+      } else {
+        toast.error("❌ Pitch not found!");
       }
     }
 
     fetchPitch();
   }, [pitchId]);
+
 
   return (
     <div className="report-container">
@@ -93,8 +186,32 @@ export default function GeneratedPitch() {
 
           <div className="report-section generated-pitch">
             <h3>✨ AI Generated Pitch</h3>
+
             {generated ? (
-              <p>{generated}</p>
+              <>
+                <div
+                  ref={pitchRef}
+                  className="pitch-output"
+                  dangerouslySetInnerHTML={{ __html: formatText(generated) }}
+                />
+
+                <div className="action-buttons">
+                  <button onClick={handleCopy} className="copy-btn">
+                    <Copy size={18} /> Copy
+                  </button>
+                  <button
+                    onClick={() => handleGenerate()}
+                    disabled={loading}
+                    className="regen-btn"
+                  >
+                    <RefreshCw size={18} />{" "}
+                    {loading ? "Regenerating..." : "Regenerate"}
+                  </button>
+                  <button onClick={handleDownloadPDF} className="pdf-btn">
+                    <FileDown size={18} /> Download PDF
+                  </button>
+                </div>
+              </>
             ) : (
               <button onClick={() => handleGenerate()} disabled={loading}>
                 {loading ? "Generating..." : "Generate Pitch with AI"}
