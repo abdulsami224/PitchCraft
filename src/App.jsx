@@ -5,6 +5,7 @@ import Signup from "./AuthPage/signup";
 import Dashboard from "./Dashboard/Dashboard";
 import CreatePitch from "./Dashboard/CreatePitch";
 import GeneratedPitch from "./Dashboard/GeneratedPitch";
+import ViewPitchRedirect from "./Dashboard/ViewPitchRedirect";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/CreatePitch" element={<CreatePitch />} />
           <Route path="/GeneratedPitch/:pitchId" element={<GeneratedPitch />} />
+          <Route path="/view-pitch" element={<ViewPitchRedirect />} />
         </Routes>
       </Router>
 

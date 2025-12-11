@@ -81,6 +81,7 @@ export default function GeneratedPitch() {
           const userName = (auth.currentUser && auth.currentUser.displayName) || "User";
 
           const pitchLink = `${window.location.origin}/GeneratedPitch/${pitchId}`;
+          const pitchLinkForEmail = `${window.location.origin}/view-pitch`;
 
           const templateParams = {
             user_name: userName,
@@ -88,6 +89,7 @@ export default function GeneratedPitch() {
             pitch_title: pitchData.idea || "Your Pitch",
             pitch_summary: summary,
             pitch_link: pitchLink,
+            pitch_link_email_view: pitchLinkForEmail,
             created_at: new Date().toLocaleString(),
           };
 
