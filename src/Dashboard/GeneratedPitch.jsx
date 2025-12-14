@@ -83,6 +83,8 @@ export default function GeneratedPitch() {
           const pitchLink = `${window.location.origin}/GeneratedPitch/${pitchId}`;
           const pitchLinkForEmail = `${window.location.origin}/view-pitch`;
 
+          console.log("pitch email", pitchLinkForEmail);
+
           const templateParams = {
             user_name: userName,
             user_email: userEmail,
