@@ -17,6 +17,8 @@ const EMAIL_SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
 const EMAIL_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const EMAIL_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
+const BASE_URL = import.meta.env.VITE_APP_BASE_URL;
+
 export default function GeneratedPitch() {
   const { pitchId } = useParams();
   const [pitch, setPitch] = useState(null);
@@ -81,9 +83,7 @@ export default function GeneratedPitch() {
           const userName = (auth.currentUser && auth.currentUser.displayName) || "User";
 
           const pitchLink = `${window.location.origin}/GeneratedPitch/${pitchId}`;
-          const pitchLinkForEmail = `${window.location.origin}/view-pitch`;
-
-          console.log("pitch email", pitchLinkForEmail);
+          const pitchLinkForEmail = `${BASE_URL}/view-pitch`;
 
           const templateParams = {
             user_name: userName,
